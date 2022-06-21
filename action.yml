@@ -132,6 +132,10 @@ runs:
       with:
         name: ${{ inputs.artifact_name }}
         path: docs/build/html
+    - id: main
+      run: |
+        mkdir -p docs/build/html
+      shell: bash -l {0}
     - uses: JamesIves/github-pages-deploy-action@v4.3.3
       with:
         branch: doc
