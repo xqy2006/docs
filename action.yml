@@ -124,16 +124,13 @@ runs:
         fi
         make html
         mkdir -p docs/build/html
+        dir
         echo "::set-output name=filepath::$(echo '${{ inputs.docs_path }}/build/html')"
       shell: bash -l {0}
     - uses: actions/upload-artifact@v2
       with:
         name: ${{ inputs.artifact_name }}
-        path: documentation
-    - uses: actions/upload-artifact@v2
-      with:
-        name: ${{ inputs.artifact_name }}
-        path: build
+        path: docs/build/html
 branding:
   icon: 'book-open'
   color: 'blue'
