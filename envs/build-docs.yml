@@ -11,7 +11,7 @@ dependencies:
   - sphinx-autobuild=0.7
   - sphinx-click=2.7
   - sphinx-copybutton=0.3
-  - sphinx_markdown_tables
+  - sphinx_markdown_tables=0.0.15
   - pip
   - pip:
     - sphinx-tabs==2.1
