@@ -1,5 +1,7 @@
 name: 'Build sphinx docs'
 description: 'Builds IDS Sphinx documentation'
+permissions: 
+  contents: write
 inputs:
   docs_path: # id of input
     description: 'The path to the documentation folder from the repo root'
