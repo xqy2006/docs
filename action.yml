@@ -132,7 +132,7 @@ runs:
       with:
         name: ${{ inputs.artifact_name }}
         path: docs/build/html
-    - id: main
+    - id: mkdir123
       run: |
         mkdir -p docs/build/html
       shell: bash -l {0}
