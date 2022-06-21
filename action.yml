@@ -123,7 +123,6 @@ runs:
           ./setup_source.sh
         fi
         make html
-        mkdir -p docs/build/html
         dir
         echo "::set-output name=filepath::$(echo '${{ inputs.docs_path }}/build/html')"
       shell: bash -l {0}
