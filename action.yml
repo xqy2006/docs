@@ -1,0 +1,134 @@
+name: 'Build sphinx docs'
+description: 'Builds IDS Sphinx documentation'
+inputs:
+  docs_path: # id of input
+    description: 'The path to the documentation folder from the repo root'
+    required: false
+    default: 'docs'
+  conda_build_env_filepath:
+    description: 'Yaml Conda build environment definition file'
+    required: false
+    default: 'action_default'
+  conda_build_env_name:
+    description: 'Name of the build conda environment'
+    required: false
+    default: 'action_default'
+  base_env_prefix:  # id of input
+    description: 'The prefix of the base Conda environment for self-hosted runs.'
+    required: false
+    default: '/usr/share/miniconda'
+  artifact_name:
+    description: 'Display name of the documentation artifact'
+    required: false
+    default: 'documentation'
+  package_folder_path:
+    description: 'Path to the folder containing the project''s package(s) to be installed'
+    required: false
+    default: 'conda_package'
+  package_name:
+    description: 'Name of the project''s Conda package'
+    required: false
+    default: ${{ github.event.repository.name }}
+outputs:
+  filepath:
+    description: 'The file path of the generated HTML documentation'
+    value: ${{ steps.main.outputs.filepath }}
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/download-artifact@v2
+      with:
+        path: artifacts
+    - id: main
+      run: |
+        echo "::set-output name=filepath::$(echo "None")"
+        echo "CHECKS"
+        echo "------"
+        if [ -d ${{ inputs.docs_path }} ]; then
+          echo "  Found the docs folder at ${{ inputs.docs_path }}"
+        else
+          echo "  ERROR: Unable to locate the docs path, ${{ inputs.docs_path }}. Skipping the build of the docs."
+          exit 0
+        fi
+        echo ""
+        echo "Selecting Build Env yml File"
+        if [ ${{ inputs.conda_build_env_filepath }} = 'action_default' ]; then
+          echo "Using the default conda configuration"
+          CONDA_BUILD_ENV_FILE="${{ github.action_path }}/envs/build-docs.yml"
+        elif [ -f ${{ inputs.conda_build_env_filepath }} ]; then
+          CONDA_BUILD_ENV_FILE=${{ inputs.conda_build_env_filepath }}
+        else
+          echo "Using the default conda configuration"
+          CONDA_BUILD_ENV_FILE="${{ github.action_path }}/envs/build-docs.yml"
+        fi
+        echo "CONDA_BUILD_ENV_FILE: ${CONDA_BUILD_ENV_FILE}"
+        cat "${CONDA_BUILD_ENV_FILE}"
+
+        echo 'source ${{ inputs.base_env_prefix }}/etc/profile.d/conda.sh'
+        source ${{ inputs.base_env_prefix }}/etc/profile.d/conda.sh
+        echo "Checking that Conda is initialized"
+        if ! command -v conda &> /dev/null; then
+          echo "ERROR: Conda is not setup."
+          exit 1
+        fi
+        echo "  Conda is initialized"
+
+        echo "Conda build docs env name"
+        if [ ${{ inputs.conda_build_env_name }} = 'action_default' ]; then
+          echo "Using the default conda build env name: ${{ github.event.repository.name }}-build-docs"
+          CONDA_BUILD_ENV_NAME="${{ github.event.repository.name }}-build-docs"
+        else
+          echo "Using the provided conda build env name: ${{ inputs.conda_build_env_name  }}"
+          CONDA_BUILD_ENV_NAME="${{ inputs.conda_build_env_name  }}"
+        fi
+
+        echo ""
+        echo "SETUP BUILD ENV"
+        echo "Set source"
+        echo "-----------------"
+        echo "Setting up ${{ github.event.repository.name }}-build environment"
+        conda env update --name ${CONDA_BUILD_ENV_NAME} \
+                         --file "${CONDA_BUILD_ENV_FILE}"  || \
+            conda env create -f "${CONDA_BUILD_ENV_FILE}"
+        conda activate ${CONDA_BUILD_ENV_NAME}
+        ls -al ${{ inputs.package_folder_path }}
+        echo "----------------"
+        if [ -a ${{ inputs.package_folder_path }}/${{ inputs.package_name }}-*.bz2 ]; then
+          conda update conda-build || conda install conda-build
+          echo "Installing project package"
+          CHANNEL_PATH="${{runner.temp}}/channel/linux-64"
+          mkdir -p "${CHANNEL_PATH}"
+          cp ${{ inputs.package_folder_path }}/${{ inputs.package_name }}-*.bz2 ${CHANNEL_PATH}
+          conda index "${CHANNEL_PATH}"
+          conda update -c "${CHANNEL_PATH}" ${{ inputs.package_name }} || \
+            conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }} || \
+            (conda uninstall ${{ inputs.package_name }} && \
+              conda install -c "${CHANNEL_PATH}" ${{ inputs.package_name }})
+
+        else
+          echo "Did not install project package"
+        fi
+        echo ""
+        echo "conda info"
+        conda info
+        echo ""
+        echo "conda list"
+        conda list
+
+        echo ""
+        echo "BUILD DOCS"
+        echo "----------"
+        cd ${{ inputs.docs_path }}
+        if [ -e "./setup_source.sh" ]; then
+          ./setup_source.sh
+        fi
+        make html
+        echo "::set-output name=filepath::$(echo '${{ inputs.docs_path }}/build/html')"
+      shell: bash -l {0}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ inputs.artifact_name }}
+        path: docs/build/html
+branding:
+  icon: 'book-open'
+  color: 'blue'
