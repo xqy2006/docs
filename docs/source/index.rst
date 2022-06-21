@@ -1,20 +1,15 @@
-.. ids-template documentation master file, created by
-   sphinx-quickstart on Thu Aug 26 16:02:32 2021.
+.. xuqinyang-doc documentation master file, created by
+   sphinx-quickstart on Tue Jun 21 14:29:47 2022.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to the sample documentation!
-========================================
+xuqinyang-doc
+=========================================
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   python/index
+   前端＆后端/index
+   crack/index
