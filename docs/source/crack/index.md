@@ -45,14 +45,14 @@ T=JSON.parse(Buffer.from("WyItLS0tLUJFR0lOIFBVQkxJQyBLRVktLS0tLSIsIk1JSUJJakFOQm
 
 //删除下面的/api/client/renew
 const a = await (await k(W + "/api/client/renew", {
-										method: "POST",
-										cache: "no-cache",
-										body: JSON.stringify(n),
-										headers: {
-											"Content-Type": "application/json",
-											"Cache-Control": "no-cache"
-										}
-									}
+	method: "POST",
+	cache: "no-cache",
+	body: JSON.stringify(n),
+	headers: {
+		"Content-Type": "application/json",
+		"Cache-Control": "no-cache"
+		}
+	}
 ```
 
 #### 3. 解包app.asar：
