@@ -129,7 +129,11 @@ runs:
     - uses: actions/upload-artifact@v2
       with:
         name: ${{ inputs.artifact_name }}
-        path: docs/build/html
+        path: documentation
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ${{ inputs.artifact_name }}
+        path: build
 branding:
   icon: 'book-open'
   color: 'blue'
