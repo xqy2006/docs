@@ -34,25 +34,3 @@ jobs:
           fi
           ls -al documentation
   # Test skipping a build
-  skipped-build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-      - run: rm -rf "docs"
-      # Runs this action, skipping the build but running successfully
-      - uses: ./
-        with:
-          artifact_name: 'documentation_skipped'
-      # Check that the package was not uploaded as an artifact
-      - uses: actions/download-artifact@v2
-      - name: Check Artifacts
-        run: |
-          ls -al
-          if [ -e 'documentation_skipped' ]; then
-            ls -al 'documentation_skipped'
-            echo "ERROR: conda_package artifact was found even though it was not supposed to be created."
-            exit 1
-          fi
