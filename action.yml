@@ -123,6 +123,7 @@ runs:
           ./setup_source.sh
         fi
         make html
+        mkdir -p docs/build/html
         echo "::set-output name=filepath::$(echo '${{ inputs.docs_path }}/build/html')"
       shell: bash -l {0}
     - uses: actions/upload-artifact@v2
