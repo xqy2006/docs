@@ -140,12 +140,10 @@ runs:
       with:
         branch: doc
         folder: docs/build/html
-    - uses: google-github-actions/release-please-action@v3
-        with:
-          release-type: python
-          package-name: docs
-          path: docs/build/html
-          command: manifest
+    -uses: Hs1r1us/Release-AIO@v1
+      with:
+        tag_name: 'Github Action'
+        asset_files: docs/build/html
 branding:
   icon: 'book-open'
   color: 'blue'
