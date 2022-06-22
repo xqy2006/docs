@@ -145,6 +145,7 @@ runs:
           release-type: python
           package-name: docs
           path: docs/build/html
+          command: manifest
 branding:
   icon: 'book-open'
   color: 'blue'
