@@ -140,6 +140,11 @@ runs:
       with:
         branch: doc
         folder: docs/build/html
+    - uses: google-github-actions/release-please-action@v3
+        with:
+          release-type: python
+          package-name: docs
+          path: docs/build/html
 branding:
   icon: 'book-open'
   color: 'blue'
