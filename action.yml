@@ -147,13 +147,13 @@ runs:
       id: tag_version
       uses: anothrNick/github-tag-action@1.36.0
       env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        GITHUB_TOKEN: "${{ secrets.ACCESS_TOKEN }}"
         WITH_V: true
     - uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
-        tag: ${{ steps.tag_version.outputs.new_tag }}
-        name: Release ${{ steps.tag_version.outputs.new_tag }}
+        tag: "${{ steps.tag_version.outputs.new_tag }}"
+        name: "Release ${{ steps.tag_version.outputs.new_tag }}"
         artifacts: |
           docs/build.zip
           docs/build.tar.gz
