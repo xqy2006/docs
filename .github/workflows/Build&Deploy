@@ -9,8 +9,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - 'docs/*'
 
 jobs:
   # Test a github hosted runner
