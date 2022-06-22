@@ -140,10 +140,9 @@ runs:
       with:
         branch: doc
         folder: docs/build/html
-    -uses: Hs1r1us/Release-AIO@v1
+    - uses: ncipollo/release-action@v1
       with:
-        tag_name: 'Github Action'
-        asset_files: 'docs/build/html'
+        artifacts: docs/build/html
 branding:
   icon: 'book-open'
   color: 'blue'
