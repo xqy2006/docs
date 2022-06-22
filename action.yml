@@ -143,7 +143,6 @@ runs:
     - uses: ncipollo/release-action@v1
       with:
         artifacts: docs/build/html
-        tag: "Github-Action"
 branding:
   icon: 'book-open'
   color: 'blue'
