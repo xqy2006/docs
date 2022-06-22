@@ -119,3 +119,4 @@ console.log("+"+key);
 ### 第二种方法
 将第一种方法的第二步改为：
 patch公钥，抓包修改/api/client/renew的response.msg=离线激活码（无“+”）
+第七步改为在线窗口输入
