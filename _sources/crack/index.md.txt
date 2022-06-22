@@ -4,7 +4,7 @@
     width: 525px;
     height: 420px;
 "></iframe>
-### 第一种方法:
+
 #### 1. 抓取解密后js：
 
 ```powershell
@@ -116,6 +116,3 @@ console.log("+"+key);
     width: 525px;
     height: 420px;
 "></iframe>
-### 第二种方法:
-将第一种方法的第二步改为：
-patch公钥，抓包修改/api/client/renew的response.msg=离线激活码（无“+”）

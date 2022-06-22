@@ -85,6 +85,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../%E5%89%8D%E7%AB%AF%EF%BC%86%E5%90%8E%E7%AB%AF/index.html">前端＆后端</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">crack</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#typora-1-3-6">Typora破解(1.3.6)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#js">1. 抓取解密后js：</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#jsatom-js-rsa-public-keybase64-renew">2. 将解包出来最大的js重命名为Atom.js，找到以下代码替换RSA Public Key的base64，删除renew：</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#app-asar">3. 解包app.asar：</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#atom-jsd-program-files-typora-resources-app">4. 将刚刚修改好的Atom.js替换“D:\Program Files\Typora\resources\app\”下的同名文件</a></li>
@@ -166,9 +167,9 @@
 <iframe src="https://xqy2006.github.io/dist-pages/license.html?dayRemains=15&amp;index=0&amp;hasActivated=true&amp;email=This_is_my_Email&amp;license=This_is_my_License_Code&amp;lang=zh-Hans&amp;needLicense=false&amp;type=1&amp;os=win" style="
     width: 525px;
     height: 420px;
-"></iframe>
-### 第一种方法:
-#### 1. 抓取解密后js：<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">frida</span>
+"></iframe><div class="section" id="js">
+<h3>1. 抓取解密后js：<a class="headerlink" href="#js" title="永久链接至标题">¶</a></h3>
+<div class="highlight-powershell notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">frida</span>
 <span class="n">frida</span> <span class="s2">&quot;D:\Program Files\Typora\Typora.exe&quot;</span> <span class="n">-l</span> <span class="s2">&quot;./unpack.js&quot;</span>
 </pre></div>
 </div>
@@ -195,6 +196,7 @@
     <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;绑定失败&#39;</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
+</div>
 </div>
 <div class="section" id="jsatom-js-rsa-public-keybase64-renew">
 <h3>2. 将解包出来最大的js重命名为Atom.js，找到以下代码替换RSA Public Key的base64，删除renew：<a class="headerlink" href="#jsatom-js-rsa-public-keybase64-renew" title="永久链接至标题">¶</a></h3>
@@ -273,10 +275,7 @@
 <iframe src="https://xqy2006.github.io/dist-pages/license.html?dayRemains=15&amp;index=0&amp;hasActivated=true&amp;email=This_is_my_Email&amp;license=This_is_my_License_Code&amp;lang=zh-Hans&amp;needLicense=false&amp;type=1&amp;os=win" style="
     width: 525px;
     height: 420px;
-"></iframe>
-### 第二种方法:
-将第一种方法的第二步改为：
-patch公钥，抓包修改/api/client/renew的response.msg=离线激活码（无“+”）</div>
+"></iframe></div>
 </div>
 </div>
 
