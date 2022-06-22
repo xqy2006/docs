@@ -154,7 +154,7 @@ runs:
     - uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
-        tag: ${{ steps.semvers.outputs.v_patch }}
+        tag: ${{ steps.semvers.outputs.patch }}
         name: Release ${{ steps.semvers.outputs.v_patch }}
         artifacts: |
           docs/build.zip
