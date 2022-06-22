@@ -6,7 +6,6 @@ dependencies:
   - conda=4.9.2
   - pip
   - pip:
-    - sphinx-tabs==2.1
     - sphinx_markdown_tables==0.0.15
     - sphinx==5.0.2
     - recommonmark==0.7.1
