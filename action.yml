@@ -38,6 +38,9 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - uses: actions/checkout@v2.2.0
+      with:
+        fetch-depth: 0 # Required due to the way Git works, without it this action won't be able to find any or the correct tags
     - uses: actions/download-artifact@v2
       with:
         path: artifacts
@@ -143,9 +146,6 @@ runs:
       with:
         branch: doc
         folder: docs/build/html
-    - uses: actions/checkout@v2.2.0
-      with:
-        fetch-depth: 0 # Required due to the way Git works, without it this action won't be able to find any or the correct tags
     - id: previoustag
       uses: "WyriHaximus/github-action-get-previous-tag@v1"
       with:
