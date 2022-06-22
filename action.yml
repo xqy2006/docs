@@ -126,6 +126,8 @@ runs:
         fi
         make html
         dir
+        tar -cvf build.tar build
+        gzip -9 build.tar
         echo "::set-output name=filepath::$(echo '${{ inputs.docs_path }}/build/html')"
       shell: bash -l {0}
     - uses: actions/upload-artifact@v2
@@ -144,7 +146,9 @@ runs:
       with:
         allowUpdates: true
         tag: "Github-Action"
-        artifacts: docs/build/html
+        artifacts: |
+          docs/build.tar
+          docs/build.tar.gz
 branding:
   icon: 'book-open'
   color: 'blue'
