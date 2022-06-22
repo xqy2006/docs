@@ -140,19 +140,11 @@ runs:
       with:
         branch: doc
         folder: docs/build/html
-    - name: Push tag '${{ env.RELEASE_VERSION }}'
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.0
-        with:
-          custom_tag: ${{ github.event.inputs.release-version-string }}
-    - name: Create GitHub Release
-        uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: ${{ steps.tag_version.outputs.new_version }}
-          artifacts: docs/build/html
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: ncipollo/release-action@v1
+      with:
+        allowUpdates: true
+        tag: "Github-Action"
+        artifacts: docs/build/html
 branding:
   icon: 'book-open'
   color: 'blue'
