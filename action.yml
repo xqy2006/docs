@@ -143,7 +143,7 @@ runs:
     -uses: Hs1r1us/Release-AIO@v1
       with:
         tag_name: 'Github Action'
-        asset_files: docs/build/html
+        asset_files: 'docs/build/html'
 branding:
   icon: 'book-open'
   color: 'blue'
