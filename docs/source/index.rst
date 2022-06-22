@@ -8,6 +8,7 @@ xuqinyang-doc
 .. image:: https://xqy2006.github.io/store/badge1.svg
 .. image:: https://xqy2006.github.io/store/badge2.svg
 .. image:: https://img.shields.io/github/last-commit/xqy2006/docs
+.. image:: https://img.shields.io/github/v/release/xqy2006/docs
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
