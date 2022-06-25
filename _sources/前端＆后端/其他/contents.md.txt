@@ -2,7 +2,23 @@
 
 ## Github Action
 
-### 1.sphinx的自动构建
+### 一、sphinx的自动构建
+
+#### 1. 一些说明
+
+​		想找个地方记录一下，看到许多python项目的文档是用sphinx写的，用一些平台托管自己的文档感觉不太自由，于是打算自己搭建一个。由于sphinx构建生成的都是静态页面，因此可以使用Github Pages托管。
+
+​		如果每次都在本地修改项目源码，然后本地构建，再将源代码上传至Github备份，静态页面部署至Github Pages，不免觉得有些麻烦，偶然间发现了Github Action功能（~~这不是直接白嫖服务器吗~~），使用Github Action进行构建和部署，这样我只需要将初始源代码上传至Github，然后想要修改或写文章的时候直接在Github上改。然后全自动更新Github Pages，并且可以随时回滚版本。
+
+#### 2. 一些坑
+
+​		① 在Github Marketplace上搜到的sphinx自动构建的Acition大多都不能使用或版本老旧（需要修改许多地方），并且所有都不支持markdown（需要加装个库）
+
+​		② 使用Github Pages默认的jekyll会导致sphinx构建的js与css无法访问（因为jekyll会不会使用\_开头的文件/文件夹，而sphinx构建的js与css存放在_static中），因此需要禁用jekyll
+
+​		③sphinx几个库的版本要注意（之前因为版本直接不兼容导致搜索功能无法使用）
+
+#### 3. 主要代码
 
 sphinx项目文件放入docs目录下
 
@@ -232,7 +248,25 @@ dependencies:
     - sphinx-copybutton
 ```
 
-### 2.基于Github Action和Github Issue的音乐生成
+#### 4. 成果
+
+https://xqy2006.github.io/docs
+
+### 二、基于Github Action和Github Issue的音乐生成
+
+#### 1. 一些说明
+
+​		之前写过一个前端(Vue)+后端(Flask)版的，无奈服务器终有一天会到期，由于有着做[第一个项目](https://xqy2006.github.io/docs/%E5%89%8D%E7%AB%AF%EF%BC%86%E5%90%8E%E7%AB%AF/%E5%85%B6%E4%BB%96/contents.html#sphinx)的经验，所以想到了使用Github Action作为后端，但是如果自己写前端的话势必需要对Github进行一些操作才能触发workflow，而对Github进行一些操作又需要登录Github账号，太麻烦了，有可能还会导致token泄露，不如直接使用Github自带的Issue作为自己的前端（~~其实是懒得写~~）
+
+#### 2. 一些坑
+
+​		①numpy绝对是大坑，各种版本不兼容（因此没有将packages上传至仓库）
+
+​		②issue是markdown的输入markdown的输出，因此需要对body进行一些处理（yaml几乎没有对字符串处理的能力，只能交给脚本了）
+
+​		③一定要等待Github Pages部署完毕后再评论，要不然结果还未部署用户就有可能发起下载请求
+
+#### 3. 主要代码
 
 训练过程省略，直接推理
 
@@ -773,3 +807,6 @@ def Reader(DIGITS,path = './work/data'):
     return read_data
 ```
 
+#### 4. 成果
+
+https://www.github.com/xqy2006/music_generation
