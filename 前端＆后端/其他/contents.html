@@ -44,7 +44,14 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">前端＆后端</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../%E5%89%8D%E7%AB%AF/contents.html">前端</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../%E5%90%8E%E7%AB%AF/contents.html">后端</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">其他</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">其他</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#github-action">Github Action</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sphinx">1.sphinx的自动构建</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#github-actiongithub-issue">2.基于Github Action和Github Issue的音乐生成</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../crack/index.html">crack</a></li>
@@ -77,6 +84,753 @@
              
   <section id="id1">
 <h1>其他<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h1>
+<section id="github-action">
+<h2>Github Action<a class="headerlink" href="#github-action" title="永久链接至标题">¶</a></h2>
+<section id="sphinx">
+<h3>1.sphinx的自动构建<a class="headerlink" href="#sphinx" title="永久链接至标题">¶</a></h3>
+<p>sphinx项目文件放入docs目录下</p>
+<p>/.github/workflows/Build&amp;Deploy.yml——启动</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Build&amp;Deploy</span><span class="w"></span>
+<span class="nt">on</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">pull_request</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">master</span><span class="w"> </span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">push</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">branches</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">master</span><span class="w"></span>
+<span class="nt">jobs</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">build-Github</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span><span class="w"></span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span><span class="w"></span>
+<span class="w">      </span><span class="c1"># Setup Conda</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">conda-incubator/setup-miniconda@v2</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3.7</span><span class="w"></span>
+<span class="w">      </span><span class="c1"># Runs this action</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">./</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">package_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;other_example&#39;</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/download-artifact@v2</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Check Artifacts</span><span class="w"></span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">          </span><span class="no">ls -al</span><span class="w"></span>
+<span class="w">          </span><span class="no">if [ ! -e documentation ]; then</span><span class="w"></span>
+<span class="w">            </span><span class="no">echo &quot;documentation artifact not found&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="no">exit 1</span><span class="w"></span>
+<span class="w">          </span><span class="no">fi</span><span class="w"></span>
+<span class="w">          </span><span class="no">ls -al documentation</span><span class="w"></span>
+</pre></div>
+</div>
+<p>/action.yml——主workflow，配置环境，构建，上传至doc分支，发布到release</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Build</span><span class="nv"> </span><span class="s">sphinx</span><span class="nv"> </span><span class="s">docs&#39;</span><span class="w"></span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Builds</span><span class="nv"> </span><span class="s">IDS</span><span class="nv"> </span><span class="s">Sphinx</span><span class="nv"> </span><span class="s">documentation&#39;</span><span class="w"></span>
+<span class="nt">permissions</span><span class="p">:</span><span class="w"> </span>
+<span class="w">  </span><span class="nt">contents</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">write</span><span class="w"></span>
+<span class="nt">inputs</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">docs_path</span><span class="p">:</span><span class="w"> </span><span class="c1"># id of input</span><span class="w"></span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;The</span><span class="nv"> </span><span class="s">path</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">documentation</span><span class="nv"> </span><span class="s">folder</span><span class="nv"> </span><span class="s">from</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">repo</span><span class="nv"> </span><span class="s">root&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;docs&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">conda_build_env_filepath</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Yaml</span><span class="nv"> </span><span class="s">Conda</span><span class="nv"> </span><span class="s">build</span><span class="nv"> </span><span class="s">environment</span><span class="nv"> </span><span class="s">definition</span><span class="nv"> </span><span class="s">file&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;action_default&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">conda_build_env_name</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Name</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">build</span><span class="nv"> </span><span class="s">conda</span><span class="nv"> </span><span class="s">environment&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;action_default&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">base_env_prefix</span><span class="p">:</span><span class="w">  </span><span class="c1"># id of input</span><span class="w"></span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;The</span><span class="nv"> </span><span class="s">prefix</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">base</span><span class="nv"> </span><span class="s">Conda</span><span class="nv"> </span><span class="s">environment</span><span class="nv"> </span><span class="s">for</span><span class="nv"> </span><span class="s">self-hosted</span><span class="nv"> </span><span class="s">runs.&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;/usr/share/miniconda&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">artifact_name</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Display</span><span class="nv"> </span><span class="s">name</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">documentation</span><span class="nv"> </span><span class="s">artifact&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;documentation&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">package_folder_path</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Path</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">folder</span><span class="nv"> </span><span class="s">containing</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">project</span><span class="se">&#39;&#39;</span><span class="s">s</span><span class="nv"> </span><span class="s">package(s)</span><span class="nv"> </span><span class="s">to</span><span class="nv"> </span><span class="s">be</span><span class="nv"> </span><span class="s">installed&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;conda_package&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">package_name</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Name</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">project</span><span class="se">&#39;&#39;</span><span class="s">s</span><span class="nv"> </span><span class="s">Conda</span><span class="nv"> </span><span class="s">package&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"></span>
+<span class="w">    </span><span class="nt">default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event.repository.name }}</span><span class="w"></span>
+<span class="nt">outputs</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">filepath</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;The</span><span class="nv"> </span><span class="s">file</span><span class="nv"> </span><span class="s">path</span><span class="nv"> </span><span class="s">of</span><span class="nv"> </span><span class="s">the</span><span class="nv"> </span><span class="s">generated</span><span class="nv"> </span><span class="s">HTML</span><span class="nv"> </span><span class="s">documentation&#39;</span><span class="w"></span>
+<span class="w">    </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.main.outputs.filepath }}</span><span class="w"></span>
+<span class="nt">runs</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">using</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;composite&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">steps</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2.2.0</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">fetch-depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span><span class="w"> </span><span class="c1"># Required due to the way Git works, without it this action won&#39;t be able to find any or the correct tags</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/download-artifact@v2</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">artifacts</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span><span class="w"></span>
+<span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;::set-output name=filepath::$(echo &quot;None&quot;)&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;CHECKS&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;------&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">if [ -d ${{ inputs.docs_path }} ]; then</span><span class="w"></span>
+<span class="w">          </span><span class="no">echo &quot;  Found the docs folder at ${{ inputs.docs_path }}&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">else</span><span class="w"></span>
+<span class="w">          </span><span class="no">echo &quot;  ERROR: Unable to locate the docs path, ${{ inputs.docs_path }}. Skipping the build of the docs.&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="no">exit 0</span><span class="w"></span>
+<span class="w">        </span><span class="no">fi</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;Selecting Build Env yml File&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">if [ ${{ inputs.conda_build_env_filepath }} = &#39;action_default&#39; ]; then</span><span class="w"></span>
+<span class="w">          </span><span class="no">echo &quot;Using the default conda configuration&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="no">CONDA_BUILD_ENV_FILE=&quot;${{ github.action_path }}/envs/build-docs.yml&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">elif [ -f ${{ inputs.conda_build_env_filepath }} ]; then</span><span class="w"></span>
+<span class="w">          </span><span class="no">CONDA_BUILD_ENV_FILE=${{ inputs.conda_build_env_filepath }}</span><span class="w"></span>
+<span class="w">        </span><span class="no">else</span><span class="w"></span>
+<span class="w">          </span><span class="no">echo &quot;Using the default conda configuration&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="no">CONDA_BUILD_ENV_FILE=&quot;${{ github.action_path }}/envs/build-docs.yml&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">fi</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;CONDA_BUILD_ENV_FILE: ${CONDA_BUILD_ENV_FILE}&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">cat &quot;${CONDA_BUILD_ENV_FILE}&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="no">echo &#39;source ${{ inputs.base_env_prefix }}/etc/profile.d/conda.sh&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="no">source ${{ inputs.base_env_prefix }}/etc/profile.d/conda.sh</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;Checking that Conda is initialized&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">if ! command -v conda &amp;&gt; /dev/null; then</span><span class="w"></span>
+<span class="w">          </span><span class="no">echo &quot;ERROR: Conda is not setup.&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="no">exit 1</span><span class="w"></span>
+<span class="w">        </span><span class="no">fi</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;  Conda is initialized&quot;</span><span class="w"></span>
+
+<span class="w">        </span><span class="no">echo &quot;Conda build docs env name&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">if [ ${{ inputs.conda_build_env_name }} = &#39;action_default&#39; ]; then</span><span class="w"></span>
+<span class="w">          </span><span class="no">echo &quot;Using the default conda build env name: ${{ github.event.repository.name }}-build-docs&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="no">CONDA_BUILD_ENV_NAME=&quot;${{ github.event.repository.name }}-build-docs&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">else</span><span class="w"></span>
+<span class="w">          </span><span class="no">echo &quot;Using the provided conda build env name: ${{ inputs.conda_build_env_name  }}&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="no">CONDA_BUILD_ENV_NAME=&quot;${{ inputs.conda_build_env_name  }}&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">fi</span><span class="w"></span>
+
+<span class="w">        </span><span class="no">echo &quot;&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;SETUP BUILD ENV&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;Set source&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;-----------------&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;Setting up ${{ github.event.repository.name }}-build environment&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">conda env update --name ${CONDA_BUILD_ENV_NAME} \</span><span class="w"></span>
+<span class="w">                         </span><span class="no">--file &quot;${CONDA_BUILD_ENV_FILE}&quot;  || \</span><span class="w"></span>
+<span class="w">            </span><span class="no">conda env create -f &quot;${CONDA_BUILD_ENV_FILE}&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">conda activate ${CONDA_BUILD_ENV_NAME}</span><span class="w"></span>
+<span class="w">        </span><span class="no">ls -al ${{ inputs.package_folder_path }}</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;----------------&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">if [ -a ${{ inputs.package_folder_path }}/${{ inputs.package_name }}-*.bz2 ]; then</span><span class="w"></span>
+<span class="w">          </span><span class="no">conda update conda-build || conda install conda-build</span><span class="w"></span>
+<span class="w">          </span><span class="no">echo &quot;Installing project package&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="no">CHANNEL_PATH=&quot;${{runner.temp}}/channel/linux-64&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="no">mkdir -p &quot;${CHANNEL_PATH}&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="no">cp ${{ inputs.package_folder_path }}/${{ inputs.package_name }}-*.bz2 ${CHANNEL_PATH}</span><span class="w"></span>
+<span class="w">          </span><span class="no">conda index &quot;${CHANNEL_PATH}&quot;</span><span class="w"></span>
+<span class="w">          </span><span class="no">conda update -c &quot;${CHANNEL_PATH}&quot; ${{ inputs.package_name }} || \</span><span class="w"></span>
+<span class="w">            </span><span class="no">conda install -c &quot;${CHANNEL_PATH}&quot; ${{ inputs.package_name }} || \</span><span class="w"></span>
+<span class="w">            </span><span class="no">(conda uninstall ${{ inputs.package_name }} &amp;&amp; \</span><span class="w"></span>
+<span class="w">              </span><span class="no">conda install -c &quot;${CHANNEL_PATH}&quot; ${{ inputs.package_name }})</span><span class="w"></span>
+
+<span class="w">        </span><span class="no">else</span><span class="w"></span>
+<span class="w">          </span><span class="no">echo &quot;Did not install project package&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">fi</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;conda info&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">conda info</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;conda list&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">conda list</span><span class="w"></span>
+
+<span class="w">        </span><span class="no">echo &quot;&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;BUILD DOCS&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;----------&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">cd ${{ inputs.docs_path }}</span><span class="w"></span>
+<span class="w">        </span><span class="no">if [ -e &quot;./setup_source.sh&quot; ]; then</span><span class="w"></span>
+<span class="w">          </span><span class="no">./setup_source.sh</span><span class="w"></span>
+<span class="w">        </span><span class="no">fi</span><span class="w"></span>
+<span class="w">        </span><span class="no">make html</span><span class="w"></span>
+<span class="w">        </span><span class="no">dir</span><span class="w"></span>
+<span class="w">        </span><span class="no">tar -cvf build.tar build</span><span class="w"></span>
+<span class="w">        </span><span class="no">gzip -9 build.tar</span><span class="w"></span>
+<span class="w">        </span><span class="no">zip -q -r build.zip build</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo &quot;::set-output name=filepath::$(echo &#39;${{ inputs.docs_path }}/build/html&#39;)&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">shell</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash -l {0}</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact@v2</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ inputs.artifact_name }}</span><span class="w"></span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/build/html</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mkdir123</span><span class="w"></span>
+<span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">        </span><span class="no">mkdir -p docs/build/html</span><span class="w"></span>
+<span class="w">      </span><span class="nt">shell</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash -l {0}</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">JamesIves/github-pages-deploy-action@v4.3.3</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">doc</span><span class="w"></span>
+<span class="w">        </span><span class="nt">folder</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/build/html</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">previoustag</span><span class="w"></span>
+<span class="w">      </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;WyriHaximus/github-action-get-previous-tag@v1&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">fallback</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0.0</span><span class="w"> </span><span class="c1"># Optional fallback tag to use when no tag can be found</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">semvers</span><span class="w"></span>
+<span class="w">      </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;WyriHaximus/github-action-next-semvers@v1&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.previoustag.outputs.tag }}</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ncipollo/release-action@v1</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">allowUpdates</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+<span class="w">        </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.semvers.outputs.patch }}</span><span class="w"></span>
+<span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Release ${{ steps.semvers.outputs.v_patch }}</span><span class="w"></span>
+<span class="w">        </span><span class="nt">artifacts</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">          </span><span class="no">docs/build.zip</span><span class="w"></span>
+<span class="w">          </span><span class="no">docs/build.tar.gz</span><span class="w"></span>
+</pre></div>
+</div>
+<p>/envs/build-docs.yml——需要的库</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">build-docs</span><span class="w"></span>
+<span class="nt">channels</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">defaults</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">conda-forge</span><span class="w"></span>
+<span class="nt">dependencies</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">conda=4.9.2</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pip</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">pip</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sphinx_markdown_tables==0.0.15</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sphinx==4.5.0</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">recommonmark==0.7.1</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sphinx_rtd_theme==1.0.0</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sphinx-panels==0.6.0</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sphinx-autobuild</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sphinx-click==4.2.0</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sphinx-copybutton</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="github-actiongithub-issue">
+<h3>2.基于Github Action和Github Issue的音乐生成<a class="headerlink" href="#github-actiongithub-issue" title="永久链接至标题">¶</a></h3>
+<p>训练过程省略，直接推理</p>
+<p>由于Github最大文件限制为100M，故将模型压缩</p>
+<p>music.py——推理主程序</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">zipfile</span>
+ 
+<span class="n">f</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="s2">&quot;./Midi_Model/best_model.zip&quot;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="c1"># 压缩文件位置</span>
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="s2">&quot;./Midi_Model/&quot;</span><span class="p">)</span>               <span class="c1"># 解压位置</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="s2">&quot;./Midi_Model/final_model.zip&quot;</span><span class="p">,</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="c1"># 压缩文件位置</span>
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">namelist</span><span class="p">():</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">file</span><span class="p">,</span><span class="s2">&quot;./Midi_Model/&quot;</span><span class="p">)</span>               <span class="c1"># 解压位置</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">music21</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">paddle</span>
+<span class="kn">import</span> <span class="nn">paddle.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">Reader</span> <span class="kn">import</span> <span class="n">Reader</span>
+<span class="kn">import</span> <span class="nn">Seq2Seq</span>
+<span class="kn">from</span> <span class="nn">binascii</span> <span class="kn">import</span> <span class="n">b2a_hex</span>
+
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">train_reader</span> <span class="o">=</span> <span class="n">Reader</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="s1">&#39;./work/data&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="c1"># 初始化log写入器</span>
+
+<span class="c1"># 模型参数设置</span>
+<span class="n">embedding_size</span> <span class="o">=</span> <span class="mi">256</span>
+<span class="n">hidden_size</span> <span class="o">=</span> <span class="mi">256</span>
+<span class="n">num_layers</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="c1"># 训练参数设置</span>
+<span class="n">epoch_num</span> <span class="o">=</span> <span class="mi">5000</span>
+<span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">1e-5</span>
+<span class="n">log_iter</span> <span class="o">=</span> <span class="mi">200</span>
+
+<span class="c1"># 定义一些所需变量</span>
+<span class="n">global_step</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">log_step</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">max_acc</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="n">midi_model</span> <span class="o">=</span> <span class="n">Seq2Seq</span><span class="o">.</span><span class="n">Midi_Model</span><span class="p">(</span>
+    <span class="n">char_len</span><span class="o">=</span><span class="mh">0x9FFF</span><span class="p">,</span>  <span class="c1"># 基本汉字的Unicode码范围为4E00-9FA5,这里设置0x9FFF长，基本够用</span>
+    <span class="n">embedding_size</span><span class="o">=</span><span class="n">embedding_size</span><span class="p">,</span>
+    <span class="n">hidden_size</span><span class="o">=</span><span class="n">hidden_size</span><span class="p">,</span>
+    <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+<span class="n">dur_model</span> <span class="o">=</span> <span class="n">Seq2Seq</span><span class="o">.</span><span class="n">Duration_Model</span><span class="p">(</span>
+    <span class="n">char_len</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>  <span class="c1"># midi范围一般在100左右,这里设置200长，基本够用</span>
+    <span class="n">embedding_size</span><span class="o">=</span><span class="n">embedding_size</span><span class="p">,</span>
+    <span class="n">hidden_size</span><span class="o">=</span><span class="n">hidden_size</span><span class="p">,</span>
+    <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
+<span class="n">midi_model</span><span class="o">.</span><span class="n">set_state_dict</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Midi_Model/final_model&#39;</span><span class="p">))</span>
+<span class="n">dur_model</span><span class="o">.</span><span class="n">set_state_dict</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Duration_Model/final_model&#39;</span><span class="p">))</span>
+<span class="n">input_lyrics</span> <span class="o">=</span> <span class="nb">input</span>
+<span class="n">lyrics</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">lyric</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">input_lyrics</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">lyrics</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+    <span class="n">lyrics</span><span class="p">[</span><span class="n">i</span> <span class="o">//</span> <span class="n">batch_size</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">lyric</span><span class="p">))</span>
+<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">lyrics</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">%</span> <span class="n">batch_size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">lyrics</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">))</span>
+<span class="n">lyrics</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">lyrics</span><span class="p">)</span>
+
+<span class="n">params_dict</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Midi_Model/best_model&#39;</span><span class="p">)</span>
+<span class="n">midi_model</span><span class="o">.</span><span class="n">set_dict</span><span class="p">(</span><span class="n">params_dict</span><span class="p">)</span>
+
+<span class="c1"># 设置为评估模式</span>
+<span class="n">midi_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+<span class="c1"># 模型推理</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">midi_model</span><span class="p">(</span><span class="n">lyrics</span><span class="p">)</span>
+
+<span class="c1"># 结果转换</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_</span><span class="p">)</span>
+
+<span class="n">midis</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">dur_dic</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;dur_dic.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">dur_str</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">dur_dic</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">dur_str</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">midi</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="n">batch_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">midis</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+    <span class="n">midis</span><span class="p">[</span><span class="n">i</span> <span class="o">//</span> <span class="n">batch_size</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">midi</span><span class="p">)</span> <span class="k">if</span> <span class="n">midi</span> <span class="o">&lt;=</span> <span class="mi">200</span> <span class="k">else</span> <span class="n">midis</span><span class="p">[</span><span class="n">i</span> <span class="o">//</span> <span class="n">batch_size</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">midis</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">%</span> <span class="n">batch_size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">midis</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">midis</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">to_tensor</span><span class="p">(</span><span class="n">midis</span><span class="p">)</span>
+
+<span class="n">params_dict</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;Duration_Model/best_model&#39;</span><span class="p">)</span>
+<span class="n">dur_model</span><span class="o">.</span><span class="n">set_dict</span><span class="p">(</span><span class="n">params_dict</span><span class="p">)</span>
+
+<span class="c1"># 设置为评估模式</span>
+<span class="n">dur_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+<span class="c1"># 模型推理</span>
+<span class="c1"># out = nn.Softmax(dur_model(midis))</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">dur_model</span><span class="p">(</span><span class="n">midis</span><span class="p">)</span>
+
+<span class="c1"># 结果转换</span>
+<span class="n">durations</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">durations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_</span><span class="p">)</span>
+
+<span class="n">dur_dic</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;dur_dic.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">dur_str</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="n">dur_dic</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">dur_str</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">dur_dic</span><span class="p">)</span>
+
+<span class="n">stream1</span> <span class="o">=</span> <span class="n">stream</span><span class="o">.</span><span class="n">Stream</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">lyric</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">input_lyrics</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">n1</span> <span class="o">=</span> <span class="n">note</span><span class="o">.</span><span class="n">Note</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n1</span> <span class="o">=</span> <span class="n">note</span><span class="o">.</span><span class="n">Rest</span><span class="p">()</span>
+    <span class="n">n1</span><span class="o">.</span><span class="n">addLyric</span><span class="p">(</span><span class="n">lyric</span><span class="p">)</span>
+    <span class="n">n1</span><span class="o">.</span><span class="n">duration</span> <span class="o">=</span> <span class="n">duration</span><span class="o">.</span><span class="n">Duration</span><span class="p">(</span><span class="n">dur_dic</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">durations</span><span class="p">[</span><span class="n">i</span><span class="p">])])</span>
+    <span class="n">stream1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n1</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">stream1</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;xml&quot;</span><span class="p">,</span> <span class="s1">&#39;./result/&#39;</span> <span class="o">+</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.xml&quot;</span><span class="p">)</span>
+<span class="n">stream1</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;midi&#39;</span><span class="p">,</span> <span class="s1">&#39;./result/&#39;</span> <span class="o">+</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;.midi&#39;</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="nb">input</span> <span class="o">+</span> <span class="s1">&#39;.midi&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>verify.py——校验输入是否全部为中文字符，若不是则报错，由verify.yml进行后续操作</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+<span class="k">def</span> <span class="nf">check_contain_chinese</span><span class="p">(</span><span class="n">check_str</span><span class="p">):</span>
+	<span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">check_str</span><span class="p">:</span>
+		<span class="k">if</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="se">\u4e00</span><span class="s1">&#39;</span> <span class="o">&lt;=</span> <span class="n">ch</span> <span class="o">&lt;=</span> <span class="sa">u</span><span class="s1">&#39;</span><span class="se">\u9f5a</span><span class="s1">&#39;</span><span class="p">:</span>
+			<span class="k">pass</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="k">return</span> <span class="kc">True</span>
+	<span class="k">return</span> <span class="kc">False</span>
+<span class="k">if</span> <span class="n">check_contain_chinese</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
+	<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;error&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>sleep.py——等待Github Pages部署完成后再回复</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">urllib3</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">()</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+  <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="s2">&quot;Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101 Firefox/68.0&quot;</span>
+  <span class="p">}</span>
+  <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">,</span><span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+  <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span>
+<span class="k">while</span> <span class="n">download</span><span class="p">(</span><span class="s1">&#39;http://xqy2006.github.io/music_generation/&#39;</span><span class="o">+</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="s1">&#39;.xml&#39;</span><span class="p">)</span><span class="o">==</span><span class="mi">404</span><span class="p">:</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Page undeploy&quot;</span><span class="p">)</span>
+  <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;finish&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>/.github/ISSUE_TEMPLATE/music_generation.yml——问题模板</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">音乐生成</span><span class="w"></span>
+<span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">音乐生成</span><span class="w"></span>
+<span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;音乐生成&quot;</span><span class="w"></span>
+<span class="nt">labels</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;music_generation&quot;</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="nt">body</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">textarea</span><span class="w"></span>
+<span class="w">    </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">input_text</span><span class="w"></span>
+<span class="w">    </span><span class="nt">attributes</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;歌词&quot;</span><span class="w"></span>
+<span class="w">      </span><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">请输入要谱曲的歌词（只能是中文，无标点）：</span><span class="w"></span>
+<span class="w">      </span><span class="nt">placeholder</span><span class="p">:</span><span class="w"> </span>
+<span class="w">      </span><span class="nt">value</span><span class="p">:</span><span class="w"> </span>
+<span class="w">    </span><span class="nt">validations</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="nt">required</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"></span>
+</pre></div>
+</div>
+<p>music_generation/.github/workflows/music.yml——主workflow，将issue的body与id传入python处理，push生成结果文件到store分支构建Github Pages，回复并关闭issue</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">music</span><span class="w"></span>
+<span class="nt">on</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">issues</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">opened</span><span class="p p-Indicator">,</span><span class="nv">edited</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">  </span><span class="nt">workflow_dispatch</span><span class="p">:</span><span class="w"></span>
+<span class="nt">jobs</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">build</span><span class="p">:</span><span class="w"></span>
+
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span><span class="w"></span>
+
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/checkout@v2</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">          </span><span class="no">mkdir -p ./id</span><span class="w"></span>
+<span class="w">          </span><span class="no">echo $ID &gt; ./id/id</span><span class="w"></span>
+<span class="w">      </span><span class="nt">env</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">ID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event.issue.number }}</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact@v3</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">id</span><span class="w"></span>
+<span class="w">          </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">id/</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/setup-python@v4</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">python-version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.x&#39;</span><span class="w"> </span><span class="c1"># Version range or exact version of a Python version to use, using SemVer&#39;s version range syntax</span><span class="w"></span>
+<span class="w">        </span><span class="nt">architecture</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;x64&#39;</span><span class="w"> </span><span class="c1"># optional x64 or x86. Defaults to x64 if not specified</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">        </span><span class="no">python verify.py $BODY</span><span class="w"></span>
+<span class="w">        </span><span class="no">git clone -b store https://github.com/xqy2006/music_generation.git &quot;result&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">pip install paddlepaddle</span><span class="w"></span>
+<span class="w">        </span><span class="no">pip install music21</span><span class="w"></span>
+<span class="w">        </span><span class="no">pip install protobuf==3.20.0</span><span class="w"></span>
+<span class="w">        </span><span class="no">python music.py $BODY $ID</span><span class="w"></span>
+<span class="w">      </span><span class="nt">env</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">BODY</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event.issue.body }}</span><span class="w"></span>
+<span class="w">          </span><span class="nt">ID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event.issue.number }}</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">JamesIves/github-pages-deploy-action@v4.3.3</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">branch</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">store</span><span class="w"></span>
+<span class="w">        </span><span class="nt">folder</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">result</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">rishabhgupta/split-by@v1</span><span class="w"></span>
+<span class="w">      </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">split</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">string</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event.issue.body }}</span><span class="w"></span>
+<span class="w">        </span><span class="nt">split-by</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;歌词</span><span class="nv"> </span><span class="s">\n</span><span class="nv"> </span><span class="s">&quot;</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mad9000/actions-find-and-replace-string@2</span><span class="w"></span>
+<span class="w">      </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">findandreplace</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ steps.split.outputs._1}}</span><span class="w"> </span><span class="c1"># this translates to ref/heads/main on the main branch, but can be any arbitrary string </span><span class="w"></span>
+<span class="w">        </span><span class="nt">find</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="w">        </span><span class="c1"># we want to remove ref/heads/ from source </span><span class="w"></span>
+<span class="w">        </span><span class="nt">replace</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;&#39;</span><span class="w">               </span><span class="c1"># and replace it with a blank string (ie. removing it)</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">        </span><span class="no">python sleep.py $ID</span><span class="w"></span>
+<span class="w">        </span><span class="no">echo OK!</span><span class="w"></span>
+<span class="w">      </span><span class="nt">env</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">ID</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event.issue.number }}</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Create comment</span><span class="w"></span>
+<span class="w">      </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions-cool/issues-helper@v2</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">actions</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;create-comment&#39;</span><span class="w"></span>
+<span class="w">          </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span><span class="w"></span>
+<span class="w">          </span><span class="nt">issue-number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event.issue.number }}</span><span class="w"></span>
+<span class="w">          </span><span class="nt">body</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">            </span><span class="no">你好 ${{ github.event.issue.user.login }} ，生成结果如下：</span><span class="w"></span>
+<span class="w">            </span><span class="no">midi格式下载地址为（导入到曲谱软件中无歌词，可在电脑上直接播放）：https://xqy2006.github.io/music_generation/${{ github.event.issue.number }}.midi</span><span class="w"></span>
+<span class="w">            </span><span class="no">xml格式下载地址为（导入到曲谱软件中有歌词，不可在电脑上直接播放）：https://xqy2006.github.io/music_generation/${{ github.event.issue.number }}.xml</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Close issue</span><span class="w"></span>
+<span class="w">      </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions-cool/issues-helper@v2</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">actions</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;close-issue&#39;</span><span class="w"></span>
+<span class="w">          </span><span class="nt">token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span><span class="w"></span>
+<span class="w">          </span><span class="nt">issue-number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event.issue.number }}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>music_generation/.github/workflows/verify.yml——当music.yml报错后运行（由verify.py抛出），回复并关闭issue</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">verify</span><span class="w"></span>
+<span class="nt">on</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">workflow_run</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">workflows</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">music</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="w">    </span><span class="nt">types</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">completed</span><span class="p p-Indicator">]</span><span class="w"></span>
+<span class="nt">jobs</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">on-failure</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="nt">runs-on</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ubuntu-latest</span><span class="w"></span>
+<span class="w">    </span><span class="nt">if</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ github.event.workflow_run.conclusion == &#39;failure&#39; }}</span><span class="w"></span>
+<span class="w">    </span><span class="nt">steps</span><span class="p">:</span><span class="w"></span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Download</span><span class="nv"> </span><span class="s">artifact&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/github-script@v6</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">            </span><span class="no">let allArtifacts = await github.rest.actions.listWorkflowRunArtifacts({</span><span class="w"></span>
+<span class="w">               </span><span class="no">owner: context.repo.owner,</span><span class="w"></span>
+<span class="w">               </span><span class="no">repo: context.repo.repo,</span><span class="w"></span>
+<span class="w">               </span><span class="no">run_id: context.payload.workflow_run.id,</span><span class="w"></span>
+<span class="w">            </span><span class="no">});</span><span class="w"></span>
+<span class="w">            </span><span class="no">let matchArtifact = allArtifacts.data.artifacts.filter((artifact) =&gt; {</span><span class="w"></span>
+<span class="w">              </span><span class="no">return artifact.name == &quot;id&quot;</span><span class="w"></span>
+<span class="w">            </span><span class="no">})[0];</span><span class="w"></span>
+<span class="w">            </span><span class="no">let download = await github.rest.actions.downloadArtifact({</span><span class="w"></span>
+<span class="w">               </span><span class="no">owner: context.repo.owner,</span><span class="w"></span>
+<span class="w">               </span><span class="no">repo: context.repo.repo,</span><span class="w"></span>
+<span class="w">               </span><span class="no">artifact_id: matchArtifact.id,</span><span class="w"></span>
+<span class="w">               </span><span class="no">archive_format: &#39;zip&#39;,</span><span class="w"></span>
+<span class="w">            </span><span class="no">});</span><span class="w"></span>
+<span class="w">            </span><span class="no">let fs = require(&#39;fs&#39;);</span><span class="w"></span>
+<span class="w">            </span><span class="no">fs.writeFileSync(`${process.env.GITHUB_WORKSPACE}/id.zip`, Buffer.from(download.data));</span><span class="w"></span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Unzip</span><span class="nv"> </span><span class="s">artifact&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">unzip id.zip</span><span class="w"></span>
+
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Comment</span><span class="nv"> </span><span class="s">on</span><span class="nv"> </span><span class="s">issue&#39;</span><span class="w"></span>
+<span class="w">        </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/github-script@v6</span><span class="w"></span>
+<span class="w">        </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">          </span><span class="nt">github-token</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ secrets.GITHUB_TOKEN }}</span><span class="w"></span>
+<span class="w">          </span><span class="nt">script</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
+<span class="w">            </span><span class="no">let fs = require(&#39;fs&#39;);</span><span class="w"></span>
+<span class="w">            </span><span class="no">let issue_number = Number(fs.readFileSync(&#39;./id&#39;));</span><span class="w"></span>
+<span class="w">            </span><span class="no">await github.rest.issues.createComment({</span><span class="w"></span>
+<span class="w">              </span><span class="no">owner: context.repo.owner,</span><span class="w"></span>
+<span class="w">              </span><span class="no">repo: context.repo.repo,</span><span class="w"></span>
+<span class="w">              </span><span class="no">issue_number: issue_number,</span><span class="w"></span>
+<span class="w">              </span><span class="no">body:&quot;# 您的输入有误！\n请检查您的输入是否全部为中文字符，并且没有标点\n可以通过 https://xqy2006.github.io/Chinese-character/ 去除非中文字符&quot;,</span><span class="w"></span>
+<span class="w">                      </span><span class="no">});</span><span class="w"></span>
+<span class="w">            </span><span class="no">await github.rest.issues.update({</span><span class="w"></span>
+<span class="w">            </span><span class="no">owner: context.repo.owner,</span><span class="w"></span>
+<span class="w">            </span><span class="no">repo: context.repo.repo,</span><span class="w"></span>
+<span class="w">            </span><span class="no">issue_number: issue_number,</span><span class="w"></span>
+<span class="w">            </span><span class="no">state: &#39;closed&#39;,</span><span class="w"></span>
+<span class="w">            </span><span class="no">});</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Seq2Seq.py——推理所需</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">paddle</span>
+<span class="kn">import</span> <span class="nn">paddle.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+
+<span class="c1"># 继承paddle.nn.Layer类</span>
+<span class="k">class</span> <span class="nc">Midi_Model</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="c1"># 重写初始化函数</span>
+    <span class="c1"># 参数：字符表长度、嵌入层大小、隐藏层大小、解码器层数、处理数字的最大位数</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">char_len</span><span class="p">,</span> <span class="n">embedding_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Midi_Model</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># 初始化变量</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MAXLEN</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span> <span class="o">=</span> <span class="n">hidden_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">char_len</span> <span class="o">=</span> <span class="n">char_len</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding_size</span><span class="o">=</span><span class="n">embedding_size</span>
+
+        <span class="c1"># 嵌入层</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emb</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span>
+            <span class="n">char_len</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embedding_size</span>
+        <span class="p">)</span>
+
+        <span class="c1"># 编码器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span>
+            <span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_size</span><span class="p">,</span>
+            <span class="n">hidden_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span>
+            <span class="n">num_layers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span>
+        <span class="p">)</span>
+
+        <span class="c1"># 解码器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span>
+            <span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span>
+            <span class="n">hidden_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span>
+            <span class="n">num_layers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span>
+        <span class="p">)</span>
+
+        <span class="c1"># 全连接层</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span>
+            <span class="n">char_len</span>
+        <span class="p">)</span>
+
+    <span class="c1"># 重写模型前向计算函数</span>
+    <span class="c1"># 参数：输入[None, MAXLEN]、标签[None, DIGITS]</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># 嵌入层</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">emb</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+        <span class="c1"># 编码器</span>
+        <span class="n">out</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+        <span class="c1"># 按时间步切分编码器输出</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAXLEN</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># 取最后一个时间步的输出并复制batch_size次</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">])</span>
+
+        <span class="c1"># 解码器</span>
+        <span class="n">out</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+        <span class="c1"># 全连接</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+        <span class="c1"># 如果标签存在，则计算其损失和准确率</span>
+        <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># 转置解码器输出</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+            <span class="c1"># 计算交叉熵损失</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># 计算准确率</span>
+            <span class="n">acc</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">char_len</span><span class="p">]),</span> <span class="n">paddle</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+
+            <span class="c1"># 返回损失和准确率</span>
+            <span class="k">return</span> <span class="n">loss</span><span class="p">,</span> <span class="n">acc</span>
+
+        <span class="c1"># 返回输出</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="c1"># 继承paddle.nn.Layer类</span>
+<span class="k">class</span> <span class="nc">Duration_Model</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
+    <span class="c1"># 重写初始化函数</span>
+    <span class="c1"># 参数：字符表长度、嵌入层大小、隐藏层大小、解码器层数、处理数字的最大位数</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">char_len</span><span class="p">,</span> <span class="n">embedding_size</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Duration_Model</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># 初始化变量</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MAXLEN</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span> <span class="o">=</span> <span class="n">hidden_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">char_len</span> <span class="o">=</span> <span class="n">char_len</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding_size</span><span class="o">=</span><span class="n">embedding_size</span>
+
+        <span class="c1"># 嵌入层</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emb</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">char_len</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embedding_size</span>
+        <span class="p">)</span>
+
+        <span class="c1"># 编码器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span>
+            <span class="n">input_size</span><span class="o">=</span><span class="n">embedding_size</span><span class="p">,</span>
+            <span class="n">hidden_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span>
+            <span class="n">num_layers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span>
+        <span class="p">)</span>
+
+        <span class="c1"># 解码器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span>
+            <span class="n">input_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span>
+            <span class="n">hidden_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span>
+            <span class="n">num_layers</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span>
+        <span class="p">)</span>
+
+        <span class="c1"># 全连接层</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">char_len</span>
+        <span class="p">)</span>
+
+    <span class="c1"># 重写模型前向计算函数</span>
+    <span class="c1"># 参数：输入[None, MAXLEN]、标签[None, DIGITS]</span>
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># 嵌入层</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">emb</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+
+        <span class="c1"># 编码器</span>
+        <span class="n">out</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+        <span class="c1"># 按时间步切分编码器输出</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">MAXLEN</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># 取最后一个时间步的输出并复制batch_size次</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">])</span>
+
+        <span class="c1"># 解码器</span>
+        <span class="n">out</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+        <span class="c1"># 全连接</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+
+        <span class="c1"># 如果标签存在，则计算其损失和准确率</span>
+        <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># 转置解码器输出</span>
+            <span class="n">tmp</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+            <span class="c1"># 计算交叉熵损失</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">functional</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">tmp</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># 计算准确率</span>
+            <span class="n">acc</span> <span class="o">=</span> <span class="n">paddle</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">accuracy</span><span class="p">(</span><span class="n">paddle</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">char_len</span><span class="p">]),</span> <span class="n">paddle</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+
+            <span class="c1"># 返回损失和准确率</span>
+            <span class="k">return</span> <span class="n">loss</span><span class="p">,</span> <span class="n">acc</span>
+
+        <span class="c1"># 返回输出</span>
+        <span class="k">return</span> <span class="n">out</span>
+</pre></div>
+</div>
+<p>Reader.py——推理所需</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">music21</span> <span class="kn">import</span> <span class="n">note</span><span class="p">,</span><span class="n">converter</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">fractions</span>
+
+<span class="k">def</span> <span class="nf">Reader</span><span class="p">(</span><span class="n">DIGITS</span><span class="p">,</span><span class="n">path</span> <span class="o">=</span> <span class="s1">&#39;./work/data&#39;</span><span class="p">):</span>
+    <span class="n">dur_dic</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">read_data</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+            <span class="n">lyrics</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">midis</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">durations</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">xml</span> <span class="o">=</span> <span class="n">converter</span><span class="o">.</span><span class="n">parseFile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">file</span><span class="p">))</span>
+            <span class="c1">#print(dir(stream.Score()))</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">note</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xml</span><span class="o">.</span><span class="n">recurse</span><span class="p">()</span><span class="o">.</span><span class="n">notesAndRests</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span><span class="o">%</span><span class="n">DIGITS</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">lyrics</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                    <span class="n">midis</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                    <span class="n">durations</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
+                <span class="n">lyric</span> <span class="o">=</span> <span class="n">note</span><span class="o">.</span><span class="n">_getLyric</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">lyric</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">lyric</span> <span class="o">=</span> <span class="s1">&#39;#&#39;</span>
+                <span class="n">lyrics</span><span class="p">[</span><span class="n">i</span><span class="o">//</span><span class="n">DIGITS</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">lyric</span><span class="p">))</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">midis</span><span class="p">[</span><span class="n">i</span><span class="o">//</span><span class="n">DIGITS</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">note</span><span class="o">.</span><span class="n">pitch</span><span class="o">.</span><span class="n">midi</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">midis</span><span class="p">[</span><span class="n">i</span><span class="o">//</span><span class="n">DIGITS</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">durations</span><span class="p">[</span><span class="n">i</span><span class="o">//</span><span class="n">DIGITS</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">note</span><span class="o">.</span><span class="n">duration</span><span class="o">.</span><span class="n">quarterLength</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">note</span><span class="o">.</span><span class="n">duration</span><span class="o">.</span><span class="n">quarterLength</span><span class="p">)</span> <span class="o">==</span> <span class="n">fractions</span><span class="o">.</span><span class="n">Fraction</span> <span class="ow">and</span> <span class="nb">float</span><span class="p">(</span><span class="n">note</span><span class="o">.</span><span class="n">duration</span><span class="o">.</span><span class="n">quarterLength</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">dur_dic</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                        <span class="n">dur_dic</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">dur_dic</span><span class="p">)]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">note</span><span class="o">.</span><span class="n">duration</span><span class="o">.</span><span class="n">quarterLength</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">note</span><span class="o">.</span><span class="n">duration</span><span class="o">.</span><span class="n">quarterLength</span><span class="p">)</span> <span class="o">!=</span> <span class="n">fractions</span><span class="o">.</span><span class="n">Fraction</span> <span class="ow">and</span> <span class="n">note</span><span class="o">.</span><span class="n">duration</span><span class="o">.</span><span class="n">quarterLength</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">dur_dic</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                    <span class="n">dur_dic</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">dur_dic</span><span class="p">)]</span> <span class="o">=</span> <span class="n">note</span><span class="o">.</span><span class="n">duration</span><span class="o">.</span><span class="n">quarterLength</span>
+            <span class="k">yield</span> <span class="p">[</span><span class="n">midis</span><span class="p">,</span><span class="n">durations</span><span class="p">,</span><span class="n">lyrics</span><span class="p">]</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;dur_dic.json&#39;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">dur_dic</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">read_data</span>
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 
 
