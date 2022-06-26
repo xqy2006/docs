@@ -46,7 +46,7 @@ runs:
         path: artifacts
     - uses: tecoli-com/actions-use-apt-tools@v0
       with:
-        tools: texlive-latex-recommended texlive-fonts-recommended tex-gyre texlive-latex-extra xelatex
+        tools: texlive-latex-recommended texlive-fonts-recommended tex-gyre texlive-latex-extra
     - id: main
       run: |
         echo "::set-output name=filepath::$(echo "None")"
