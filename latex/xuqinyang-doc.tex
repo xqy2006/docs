@@ -9,12 +9,6 @@
 \fi
 %% let collapsible pdf bookmarks panel have high depth per default
 \PassOptionsToPackage{bookmarksdepth=5}{hyperref}
-%% turn off hyperref patch of \index as sphinx.xdy xindy module takes care of
-%% suitable \hyperpage mark-up, working around hyperref-xindy incompatibility
-\PassOptionsToPackage{hyperindex=false}{hyperref}
-%% memoir class requires extra handling
-\makeatletter\@ifclassloaded{memoir}
-{\ifdefined\memhyperindexfalse\memhyperindexfalse\fi}{}\makeatother
 
 \PassOptionsToPackage{warn}{textcomp}
 
@@ -71,6 +65,7 @@
 \usepackage{sphinxmessages}
 \setcounter{tocdepth}{5}
 \setcounter{secnumdepth}{5}
+\usepackage[UTF8]{ctex}
 
 
 \title{xuqinyang\sphinxhyphen{}doc}
@@ -94,14 +89,6 @@
 \pagestyle{normal}
 \phantomsection\label{\detokenize{index::doc}}
 
-
-\noindent\sphinxincludegraphics{{/home/runner/work/docs/docs/docs/build/doctrees/images/923a23ac200c36f56228694f2d9e957d0072227c/badge1}.svg}
-
-\noindent\sphinxincludegraphics{{/home/runner/work/docs/docs/docs/build/doctrees/images/10ae4370004602542e16f405e5a6ac97a602e0f9/badge2}.svg}
-
-\noindent\sphinxincludegraphics{{/home/runner/work/docs/docs/docs/build/doctrees/images/09dc6959e9d0685959d831c2ea25df8cd8e291a9/docs}.svg}
-
-\noindent\sphinxincludegraphics{{/home/runner/work/docs/docs/docs/build/doctrees/images/eff163b443c535716b6999debfb356302382a27b/docs}.svg}
 
 \sphinxstepscope
 

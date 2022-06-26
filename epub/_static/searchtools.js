@@ -520,6 +520,4 @@ var Search = {
   }
 };
 
-$(document).ready(function() {
-  Search.init();
-});
+/* Search initialization removed for Read the Docs */
