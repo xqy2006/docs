@@ -85,11 +85,11 @@ context = {
     ],
     'subprojects': [ 
     ],
-    'slug': 'xqy2006-doc',
+    'slug': 'xuqinyang-doc',
     'name': u'xuqinyang-doc',
     'rtd_language': u'zh_CN',
     'programming_language': u'words',
-    'canonical_url': 'https://xqy2006-doc.readthedocs.io/zh_CN/latest/',
+    'canonical_url': 'https://xqy2006.github.io/docs/',
     'analytics_code': 'None',
     'single_version': False,
     'conf_py_path': '/docs/source/',
@@ -106,8 +106,8 @@ context = {
     'gitlab_user': 'None',
     'gitlab_repo': 'None',
     'gitlab_version': 'main',
-    'display_gitlab': False,
-    'READTHEDOCS': True,
+    'display_gitlab': True,
+    'READTHEDOCS': False,
     'using_theme': (html_theme == "default"),
     'new_theme': (html_theme == "sphinx_rtd_theme"),
     'docsearch_disabled': False,
@@ -122,3 +122,4 @@ if 'html_context' in globals():
     
 else:
     html_context = context
+readthedocs_build_url = 'https://github.com/xqy2006/docs'
