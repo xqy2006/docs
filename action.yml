@@ -44,6 +44,8 @@ runs:
     - uses: actions/download-artifact@v2
       with:
         path: artifacts
+    - run: |
+        fc-list :lang=zh
     - uses: tecoli-com/actions-use-apt-tools@v0
       with:
         tools: texlive-latex-recommended texlive-fonts-recommended tex-gyre texlive-latex-extra texlive-xetex texlive-luatex texlive-lang-chinese fonts-freefont-otf
