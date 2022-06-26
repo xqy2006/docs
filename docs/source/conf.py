@@ -22,7 +22,7 @@ copyright = '2022, xuqinyang'
 author = 'xuqinyang'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = 'x.x.x'
 
 
 # -- General configuration ---------------------------------------------------
@@ -96,8 +96,8 @@ context = {
     'api_host': 'https://readthedocs.org',
     'github_user': 'xqy2006',
     'proxied_api_host': '/_',
-    'github_repo': 'doc',
-    'github_version': 'main',
+    'github_repo': 'docs',
+    'github_version': 'master',
     'display_github': True,
     'bitbucket_user': 'None',
     'bitbucket_repo': 'None',
@@ -107,7 +107,7 @@ context = {
     'gitlab_repo': 'None',
     'gitlab_version': 'main',
     'display_gitlab': True,
-    'READTHEDOCS': False,
+    'READTHEDOCS': True,
     'using_theme': (html_theme == "default"),
     'new_theme': (html_theme == "sphinx_rtd_theme"),
     'docsearch_disabled': False,
