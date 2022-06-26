@@ -67,7 +67,7 @@ html_static_path = ['_static']
 
 #Add project information to the template context.
 context = {
-    'using_theme': using_rtd_theme,
+    'using_theme': "sphinx_rtd_theme",
     'html_theme': html_theme,
     'current_version': "latest",
     'version_slug': "latest",
