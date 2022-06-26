@@ -132,13 +132,8 @@ runs:
         fi
         make html
         sudo apt-get install latexmk
-        make latex
+        make latexpdf
         make epub
-        cd build/latex
-        xelatex xuqinyang-doc.tex
-        xelatex xuqinyang-doc.tex
-        cd ..
-        cd ..
         dir
         tar -cvf build.tar build
         gzip -9 build.tar
