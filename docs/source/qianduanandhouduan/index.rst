@@ -4,6 +4,6 @@
 .. toctree::
    :maxdepth: 2
 
-   前端/contents
-   后端/contents
-   其他/contents
+   qianduan/contents
+   houduan/contents
+   qita/contents
