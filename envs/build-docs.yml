@@ -14,3 +14,4 @@ dependencies:
     - sphinx-autobuild
     - sphinx-click==4.2.0
     - sphinx-copybutton
+    - readthedocs-sphinx-ext
