@@ -127,9 +127,9 @@ runs:
         if [ -e "./setup_source.sh" ]; then
           ./setup_source.sh
         fi
-        make html
-        apt-get install texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended  
+        make html 
         make latexpdf
+        make epub
         dir
         tar -cvf build.tar build
         gzip -9 build.tar
