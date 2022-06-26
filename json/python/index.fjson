@@ -1,8 +1,0 @@
-{
-    "body": "<section id=\"python\">\n<h1>Python<a class=\"headerlink\" href=\"#python\" title=\"\u6c38\u4e45\u94fe\u63a5\u81f3\u6807\u9898\">\u00b6</a></h1>\n<div class=\"toctree-wrapper compound\">\n<ul>\n<li class=\"toctree-l1\"><a class=\"reference internal\" href=\"common/contents.html\">\u5e38\u89c4</a></li>\n<li class=\"toctree-l1\"><a class=\"reference internal\" href=\"machinelearning/contents.html\">\u673a\u5668\u5b66\u4e60</a></li>\n<li class=\"toctree-l1\"><a class=\"reference internal\" href=\"else/contents.html\">\u5176\u4ed6</a></li>\n</ul>\n</div>\n</section>\n",
-    "title": "Python",
-    "sourcename": "python/index.rst.txt",
-    "current_page_name": "python/index",
-    "toc": "<ul>\n<li><a class=\"reference internal\" href=\"#\">Python</a></li>\n</ul>\n",
-    "page_source_suffix": ".rst"
-}
