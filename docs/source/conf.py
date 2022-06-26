@@ -82,8 +82,3 @@ latex_elements = {
 \renewcommand\CJKfamilydefault{\CJKrmdefault}
 '''
 }
-# 设置文档
-latex_documents = [
-    (master_doc, 'xuqinyang-doc.tex', 'xuqinyang-doc',
-     'xuqinyang', 'manual', True),
-]
