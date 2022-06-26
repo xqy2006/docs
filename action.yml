@@ -131,8 +131,8 @@ runs:
           ./setup_source.sh
         fi
         make html
-        sudo apt-get install latexmk=4.35
-        make latexpdf
+        sudo apt-get install latexmk
+        make latexpdf latexmkLATEXMKOPTS="-xelatex"
         make epub
         dir
         tar -cvf build.tar build
