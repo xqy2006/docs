@@ -139,11 +139,17 @@ runs:
         gzip -9 build.tar
         zip -q -r build.zip build
         echo "::set-output name=filepath::$(echo '${{ inputs.docs_path }}/build/html')"
+        cd build
+        zip -q -r xuqinyang-doc.zip html
+        cp xuqinyang-doc.zip /html/xuqinyang-doc.zip
+        cp /latex/xuqinyang-doc.pdf /html/xuqinyang-doc.pdf
+        cp /epub/xuqinyang-doc.epub /html/xuqinyang-doc.epub
+        cd ..
       shell: bash -l {0}
     - uses: actions/upload-artifact@v2
       with:
         name: ${{ inputs.artifact_name }}
-        path: docs/build/html
+        path: docs/build/
     - id: mkdir123
       run: |
         mkdir -p docs/build/
@@ -151,7 +157,7 @@ runs:
     - uses: JamesIves/github-pages-deploy-action@v4.3.3
       with:
         branch: doc
-        folder: docs/build/
+        folder: docs/build/html
     - id: previoustag
       uses: "WyriHaximus/github-action-get-previous-tag@v1"
       with:
