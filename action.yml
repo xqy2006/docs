@@ -128,6 +128,8 @@ runs:
           ./setup_source.sh
         fi
         make html
+        apt-get install texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended  
+        make latexpdf
         dir
         tar -cvf build.tar build
         gzip -9 build.tar
@@ -140,12 +142,12 @@ runs:
         path: docs/build/html
     - id: mkdir123
       run: |
-        mkdir -p docs/build/html
+        mkdir -p docs/build/
       shell: bash -l {0}
     - uses: JamesIves/github-pages-deploy-action@v4.3.3
       with:
         branch: doc
-        folder: docs/build/html
+        folder: docs/build/
     - id: previoustag
       uses: "WyriHaximus/github-action-get-previous-tag@v1"
       with:
