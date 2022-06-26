@@ -106,7 +106,7 @@ context = {
     'gitlab_user': 'None',
     'gitlab_repo': 'None',
     'gitlab_version': 'main',
-    'display_gitlab': True,
+    'display_gitlab': False,
     'READTHEDOCS': True,
     'using_theme': (html_theme == "default"),
     'new_theme': (html_theme == "sphinx_rtd_theme"),
@@ -122,4 +122,4 @@ if 'html_context' in globals():
     
 else:
     html_context = context
-readthedocs_build_url = 'https://github.com/xqy2006/docs'
+#readthedocs_build_url = 'https://github.com/xqy2006/docs'
