@@ -110,8 +110,6 @@ context = {
     'READTHEDOCS': True,
     'using_theme': (html_theme == "default"),
     'new_theme': (html_theme == "sphinx_rtd_theme"),
-    'source_suffix': SUFFIX,
-    'ad_free': False,
     'docsearch_disabled': False,
     'user_analytics_code': '',
     'global_analytics_code': 'UA-17997319-1',
