@@ -44,9 +44,9 @@ runs:
     - uses: actions/download-artifact@v2
       with:
         path: artifacts
-    - uses: tecoli-com/actions-use-apt-tools@v0
-      with:
-        tools: texlive-latex-recommended texlive-fonts-recommended tex-gyre texlive-latex-extra texlive-xetex texlive-luatex texlive-lang-chinese
+    #- uses: tecoli-com/actions-use-apt-tools@v0
+      #with:
+        #tools: texlive-latex-recommended texlive-fonts-recommended tex-gyre texlive-latex-extra texlive-xetex texlive-luatex texlive-lang-chinese
     - id: main
       run: |
         echo "::set-output name=filepath::$(echo "None")"
@@ -131,8 +131,8 @@ runs:
           ./setup_source.sh
         fi
         make html
-        sudo apt-get install latexmk
-        make latexpdf
+        #sudo apt-get install latexmk
+        make latex
         make epub
         dir
         tar -cvf build.tar build
