@@ -134,8 +134,8 @@ if using_rtd_theme:
         html_theme_path = [theme.get_html_theme_path()]
 
 if globals().get('websupport2_base_url', False):
-    websupport2_base_url = 'https://readthedocs.org/websupport'
-    websupport2_static_url = 'https://assets.readthedocs.org/static/'
+    websupport2_base_url = 'https://xqy2006.github.io/docs'
+    websupport2_static_url = 'https://xqy2006.github.io/docs/_static/'
 
 
 #Add project information to the template context.
@@ -144,17 +144,17 @@ context = {
     'html_theme': html_theme,
     'current_version': "latest",
     'version_slug': "latest",
-    'MEDIA_URL': "https://media.readthedocs.org/",
-    'STATIC_URL': "https://assets.readthedocs.org/static/",
+    'MEDIA_URL': "https://xqy2006.github.io/docs",
+    'STATIC_URL': "https://xqy2006.github.io/docs/_static/",
     'PRODUCTION_DOMAIN': "readthedocs.org",
-    'proxied_static_path': "/_/static/",
+    'proxied_static_path': "/_/_static/",
     'versions': [
     ("latest", "/zh_CN/latest/"),
     ],
     'downloads': [ 
-    ("pdf", "//xqy2006-doc.readthedocs.io/_/downloads/zh_CN/latest/pdf/"),
-    ("html", "//xqy2006-doc.readthedocs.io/_/downloads/zh_CN/latest/htmlzip/"),
-    ("epub", "//xqy2006-doc.readthedocs.io/_/downloads/zh_CN/latest/epub/"),
+    ("pdf", "//xqy2006.github.io/docs/xuqinyang-doc.pdf"),
+    ("html", "//xqy2006.github.io/docs/xuqinyang-doc.zip"),
+    ("epub", "//xqy2006.github.io/docs/xuqinyang-doc.epub"),
     ],
     'subprojects': [ 
     ],
@@ -162,11 +162,11 @@ context = {
     'name': u'xuqinyang-doc',
     'rtd_language': u'zh_CN',
     'programming_language': u'words',
-    'canonical_url': 'https://xqy2006-doc.readthedocs.io/zh_CN/latest/',
+    'canonical_url': 'https://xqy2006.github.io/docs/',
     'analytics_code': 'None',
     'single_version': False,
     'conf_py_path': '/docs/source/',
-    'api_host': 'https://readthedocs.org',
+    'api_host': 'https://xqy2006.github.io/docs/',
     'github_user': 'xqy2006',
     'proxied_api_host': '/_',
     'github_repo': 'doc',
@@ -222,7 +222,7 @@ else:
 if 'branch' == 'external':
     extensions.insert(1, "readthedocs_ext.external_version_warning")
     readthedocs_vcs_url = 'None'
-    readthedocs_build_url = 'https://readthedocs.org/projects/xqy2006-doc/builds/17237172/'
+    readthedocs_build_url = 'https://github.com/xqy2006/docs/'
 
 project_language = 'zh_CN'
 
