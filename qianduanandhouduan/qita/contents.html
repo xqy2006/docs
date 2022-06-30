@@ -100,7 +100,8 @@
 <h4>2. 一些坑<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h4>
 <p>​		① 在Github Marketplace上搜到的sphinx自动构建的Acition大多都不能使用或版本老旧（需要修改许多地方），并且所有都不支持markdown（需要加装个库）</p>
 <p>​		② 使用Github Pages默认的jekyll会导致sphinx构建的js与css无法访问（因为jekyll会不会使用_开头的文件/文件夹，而sphinx构建的js与css存放在_static中），因此需要禁用jekyll</p>
-<p>​		③sphinx几个库的版本要注意（之前因为版本直接不兼容导致搜索功能无法使用）</p>
+<p>​		③ sphinx几个库的版本要注意（之前因为版本直接不兼容导致搜索功能无法使用）</p>
+<p>​		④ latex也是坑，为了支持pdf下载，不得不倒腾latex，pdflatex不支持中文，xelatex会因为我的badge未设置大小而报错，最终删除badge使用xelatex</p>
 </section>
 <section id="id4">
 <h4>3. 主要代码<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h4>
@@ -185,6 +186,9 @@
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/download-artifact@v2</span><span class="w"></span>
 <span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">artifacts</span><span class="w"></span>
+<span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tecoli-com/actions-use-apt-tools@v0</span><span class="w"></span>
+<span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
+<span class="w">        </span><span class="nt">tools</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">texlive-latex-recommended texlive-fonts-recommended tex-gyre texlive-latex-extra texlive-xetex texlive-luatex texlive-lang-chinese fonts-freefont-otf</span><span class="w"> </span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">main</span><span class="w"></span>
 <span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
 <span class="w">        </span><span class="no">echo &quot;::set-output name=filepath::$(echo &quot;None&quot;)&quot;</span><span class="w"></span>
@@ -209,7 +213,6 @@
 <span class="w">        </span><span class="no">fi</span><span class="w"></span>
 <span class="w">        </span><span class="no">echo &quot;CONDA_BUILD_ENV_FILE: ${CONDA_BUILD_ENV_FILE}&quot;</span><span class="w"></span>
 <span class="w">        </span><span class="no">cat &quot;${CONDA_BUILD_ENV_FILE}&quot;</span><span class="w"></span>
-
 <span class="w">        </span><span class="no">echo &#39;source ${{ inputs.base_env_prefix }}/etc/profile.d/conda.sh&#39;</span><span class="w"></span>
 <span class="w">        </span><span class="no">source ${{ inputs.base_env_prefix }}/etc/profile.d/conda.sh</span><span class="w"></span>
 <span class="w">        </span><span class="no">echo &quot;Checking that Conda is initialized&quot;</span><span class="w"></span>
@@ -218,7 +221,6 @@
 <span class="w">          </span><span class="no">exit 1</span><span class="w"></span>
 <span class="w">        </span><span class="no">fi</span><span class="w"></span>
 <span class="w">        </span><span class="no">echo &quot;  Conda is initialized&quot;</span><span class="w"></span>
-
 <span class="w">        </span><span class="no">echo &quot;Conda build docs env name&quot;</span><span class="w"></span>
 <span class="w">        </span><span class="no">if [ ${{ inputs.conda_build_env_name }} = &#39;action_default&#39; ]; then</span><span class="w"></span>
 <span class="w">          </span><span class="no">echo &quot;Using the default conda build env name: ${{ github.event.repository.name }}-build-docs&quot;</span><span class="w"></span>
@@ -227,7 +229,6 @@
 <span class="w">          </span><span class="no">echo &quot;Using the provided conda build env name: ${{ inputs.conda_build_env_name  }}&quot;</span><span class="w"></span>
 <span class="w">          </span><span class="no">CONDA_BUILD_ENV_NAME=&quot;${{ inputs.conda_build_env_name  }}&quot;</span><span class="w"></span>
 <span class="w">        </span><span class="no">fi</span><span class="w"></span>
-
 <span class="w">        </span><span class="no">echo &quot;&quot;</span><span class="w"></span>
 <span class="w">        </span><span class="no">echo &quot;SETUP BUILD ENV&quot;</span><span class="w"></span>
 <span class="w">        </span><span class="no">echo &quot;Set source&quot;</span><span class="w"></span>
@@ -250,7 +251,6 @@
 <span class="w">            </span><span class="no">conda install -c &quot;${CHANNEL_PATH}&quot; ${{ inputs.package_name }} || \</span><span class="w"></span>
 <span class="w">            </span><span class="no">(conda uninstall ${{ inputs.package_name }} &amp;&amp; \</span><span class="w"></span>
 <span class="w">              </span><span class="no">conda install -c &quot;${CHANNEL_PATH}&quot; ${{ inputs.package_name }})</span><span class="w"></span>
-
 <span class="w">        </span><span class="no">else</span><span class="w"></span>
 <span class="w">          </span><span class="no">echo &quot;Did not install project package&quot;</span><span class="w"></span>
 <span class="w">        </span><span class="no">fi</span><span class="w"></span>
@@ -260,7 +260,6 @@
 <span class="w">        </span><span class="no">echo &quot;&quot;</span><span class="w"></span>
 <span class="w">        </span><span class="no">echo &quot;conda list&quot;</span><span class="w"></span>
 <span class="w">        </span><span class="no">conda list</span><span class="w"></span>
-
 <span class="w">        </span><span class="no">echo &quot;&quot;</span><span class="w"></span>
 <span class="w">        </span><span class="no">echo &quot;BUILD DOCS&quot;</span><span class="w"></span>
 <span class="w">        </span><span class="no">echo &quot;----------&quot;</span><span class="w"></span>
@@ -269,19 +268,28 @@
 <span class="w">          </span><span class="no">./setup_source.sh</span><span class="w"></span>
 <span class="w">        </span><span class="no">fi</span><span class="w"></span>
 <span class="w">        </span><span class="no">make html</span><span class="w"></span>
+<span class="w">        </span><span class="no">sudo apt-get install latexmk</span><span class="w"></span>
+<span class="w">        </span><span class="no">make latexpdf</span><span class="w"></span>
+<span class="w">        </span><span class="no">make epub</span><span class="w"></span>
 <span class="w">        </span><span class="no">dir</span><span class="w"></span>
 <span class="w">        </span><span class="no">tar -cvf build.tar build</span><span class="w"></span>
 <span class="w">        </span><span class="no">gzip -9 build.tar</span><span class="w"></span>
 <span class="w">        </span><span class="no">zip -q -r build.zip build</span><span class="w"></span>
 <span class="w">        </span><span class="no">echo &quot;::set-output name=filepath::$(echo &#39;${{ inputs.docs_path }}/build/html&#39;)&quot;</span><span class="w"></span>
+<span class="w">        </span><span class="no">cd build</span><span class="w"></span>
+<span class="w">        </span><span class="no">zip -q -r xuqinyang-doc.zip html</span><span class="w"></span>
+<span class="w">        </span><span class="no">cp xuqinyang-doc.zip ./html/xuqinyang-doc.zip</span><span class="w"></span>
+<span class="w">        </span><span class="no">cp ./latex/xuqinyang-doc.pdf ./html/xuqinyang-doc.pdf</span><span class="w"></span>
+<span class="w">        </span><span class="no">cp ./epub/xuqinyang-doc.epub ./html/xuqinyang-doc.epub</span><span class="w"></span>
+<span class="w">        </span><span class="no">cd ..</span><span class="w"></span>
 <span class="w">      </span><span class="nt">shell</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash -l {0}</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact@v2</span><span class="w"></span>
 <span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
 <span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${{ inputs.artifact_name }}</span><span class="w"></span>
-<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/build/html</span><span class="w"></span>
+<span class="w">        </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">docs/build/</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">mkdir123</span><span class="w"></span>
 <span class="w">      </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
-<span class="w">        </span><span class="no">mkdir -p docs/build/html</span><span class="w"></span>
+<span class="w">        </span><span class="no">mkdir -p docs/build/</span><span class="w"></span>
 <span class="w">      </span><span class="nt">shell</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">bash -l {0}</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">JamesIves/github-pages-deploy-action@v4.3.3</span><span class="w"></span>
 <span class="w">      </span><span class="nt">with</span><span class="p">:</span><span class="w"></span>
@@ -303,6 +311,9 @@
 <span class="w">        </span><span class="nt">artifacts</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span><span class="w"></span>
 <span class="w">          </span><span class="no">docs/build.zip</span><span class="w"></span>
 <span class="w">          </span><span class="no">docs/build.tar.gz</span><span class="w"></span>
+<span class="nt">branding</span><span class="p">:</span><span class="w"></span>
+<span class="w">  </span><span class="nt">icon</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;book-open&#39;</span><span class="w"></span>
+<span class="w">  </span><span class="nt">color</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;blue&#39;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>/envs/build-docs.yml——需要的库</p>
@@ -322,6 +333,134 @@
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sphinx-autobuild</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sphinx-click==4.2.0</span><span class="w"></span>
 <span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">sphinx-copybutton</span><span class="w"></span>
+</pre></div>
+</div>
+<p>conf.py</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configuration file for the Sphinx documentation builder.</span>
+<span class="c1">#</span>
+<span class="c1"># This file only contains a selection of the most common options. For a full</span>
+<span class="c1"># list see the documentation:</span>
+<span class="c1"># https://www.sphinx-doc.org/en/master/usage/configuration.html</span>
+
+<span class="c1"># -- Path setup --------------------------------------------------------------</span>
+
+<span class="c1"># If extensions (or modules to document with autodoc) are in another directory,</span>
+<span class="c1"># add these directories to sys.path here. If the directory is relative to the</span>
+<span class="c1"># documentation root, use os.path.abspath to make it absolute, like shown here.</span>
+<span class="c1">#</span>
+<span class="c1"># import os</span>
+<span class="c1"># import sys</span>
+<span class="c1"># sys.path.insert(0, os.path.abspath(&#39;.&#39;))</span>
+
+
+<span class="c1"># -- Project information -----------------------------------------------------</span>
+
+<span class="n">project</span> <span class="o">=</span> <span class="s1">&#39;xuqinyang-doc&#39;</span>
+<span class="n">copyright</span> <span class="o">=</span> <span class="s1">&#39;2022, xuqinyang&#39;</span>
+<span class="n">author</span> <span class="o">=</span> <span class="s1">&#39;xuqinyang&#39;</span>
+
+<span class="c1"># The full version, including alpha/beta/rc tags</span>
+<span class="n">release</span> <span class="o">=</span> <span class="s1">&#39;x.x.x&#39;</span>
+
+
+<span class="c1"># -- General configuration ---------------------------------------------------</span>
+
+<span class="c1"># Add any Sphinx extension module names here, as strings. They can be</span>
+<span class="c1"># extensions coming with Sphinx (named &#39;sphinx.ext.*&#39;) or your custom</span>
+<span class="c1"># ones.</span>
+<span class="n">extensions</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;recommonmark&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;sphinx_markdown_tables&#39;</span>
+<span class="p">]</span>
+
+<span class="c1"># Add any paths that contain templates here, relative to this directory.</span>
+<span class="n">templates_path</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_templates&#39;</span><span class="p">]</span>
+
+<span class="c1"># The language for content autogenerated by Sphinx. Refer to documentation</span>
+<span class="c1"># for a list of supported languages.</span>
+<span class="c1">#</span>
+<span class="c1"># This is also used if you do content translation via gettext catalogs.</span>
+<span class="c1"># Usually you set &quot;language&quot; from the command line for these cases.</span>
+<span class="n">language</span> <span class="o">=</span> <span class="s1">&#39;zh_CN&#39;</span>
+
+<span class="c1"># List of patterns, relative to source directory, that match files and</span>
+<span class="c1"># directories to ignore when looking for source files.</span>
+<span class="c1"># This pattern also affects html_static_path and html_extra_path.</span>
+<span class="n">exclude_patterns</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<span class="c1"># -- Options for HTML output -------------------------------------------------</span>
+
+<span class="c1"># The theme to use for HTML and HTML Help pages.  See the documentation for</span>
+<span class="c1"># a list of builtin themes.</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">sphinx_rtd_theme</span>
+<span class="n">html_theme</span> <span class="o">=</span> <span class="s2">&quot;sphinx_rtd_theme&quot;</span>
+<span class="n">html_theme_path</span> <span class="o">=</span> <span class="p">[</span><span class="n">sphinx_rtd_theme</span><span class="o">.</span><span class="n">get_html_theme_path</span><span class="p">()]</span>
+
+<span class="c1"># Add any paths that contain custom static files (such as style sheets) here,</span>
+<span class="c1"># relative to this directory. They are copied after the builtin static files,</span>
+<span class="c1"># so a file named &quot;default.css&quot; will overwrite the builtin &quot;default.css&quot;.</span>
+<span class="n">html_static_path</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_static&#39;</span><span class="p">]</span>
+
+<span class="c1">#Add project information to the template context.</span>
+<span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;using_theme&#39;</span><span class="p">:</span> <span class="s2">&quot;sphinx_rtd_theme&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;html_theme&#39;</span><span class="p">:</span> <span class="n">html_theme</span><span class="p">,</span>
+    <span class="s1">&#39;current_version&#39;</span><span class="p">:</span> <span class="s2">&quot;latest&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;version_slug&#39;</span><span class="p">:</span> <span class="s2">&quot;latest&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;MEDIA_URL&#39;</span><span class="p">:</span> <span class="s2">&quot;https://media.readthedocs.org/&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;STATIC_URL&#39;</span><span class="p">:</span> <span class="s2">&quot;https://assets.readthedocs.org/static/&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;PRODUCTION_DOMAIN&#39;</span><span class="p">:</span> <span class="s2">&quot;readthedocs.org&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;proxied_static_path&#39;</span><span class="p">:</span> <span class="s2">&quot;/_/static/&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;versions&#39;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;latest&quot;</span><span class="p">,</span> <span class="s2">&quot;/zh_CN/latest/&quot;</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;downloads&#39;</span><span class="p">:</span> <span class="p">[</span> 
+    <span class="p">(</span><span class="s2">&quot;pdf&quot;</span><span class="p">,</span> <span class="s2">&quot;//xqy2006.github.io/docs/xuqinyang-doc.pdf&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;html&quot;</span><span class="p">,</span> <span class="s2">&quot;//xqy2006.github.io/docs/xuqinyang-doc.zip&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;epub&quot;</span><span class="p">,</span> <span class="s2">&quot;//xqy2006.github.io/docs/xuqinyang-doc.epub&quot;</span><span class="p">),</span>
+    <span class="p">],</span>
+    <span class="s1">&#39;subprojects&#39;</span><span class="p">:</span> <span class="p">[</span> 
+    <span class="p">],</span>
+    <span class="s1">&#39;slug&#39;</span><span class="p">:</span> <span class="s1">&#39;xuqinyang-doc&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;xuqinyang-doc&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rtd_language&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;zh_CN&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;programming_language&#39;</span><span class="p">:</span> <span class="sa">u</span><span class="s1">&#39;words&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;canonical_url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://xqy2006.github.io/docs/&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;analytics_code&#39;</span><span class="p">:</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;single_version&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;conf_py_path&#39;</span><span class="p">:</span> <span class="s1">&#39;/docs/source/&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;api_host&#39;</span><span class="p">:</span> <span class="s1">&#39;https://readthedocs.org&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;github_user&#39;</span><span class="p">:</span> <span class="s1">&#39;xqy2006&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;proxied_api_host&#39;</span><span class="p">:</span> <span class="s1">&#39;/_&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;github_repo&#39;</span><span class="p">:</span> <span class="s1">&#39;docs&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;github_version&#39;</span><span class="p">:</span> <span class="s1">&#39;master&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;display_github&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;bitbucket_user&#39;</span><span class="p">:</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bitbucket_repo&#39;</span><span class="p">:</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;bitbucket_version&#39;</span><span class="p">:</span> <span class="s1">&#39;main&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;display_bitbucket&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;gitlab_user&#39;</span><span class="p">:</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;gitlab_repo&#39;</span><span class="p">:</span> <span class="s1">&#39;None&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;gitlab_version&#39;</span><span class="p">:</span> <span class="s1">&#39;main&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;display_gitlab&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;READTHEDOCS&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;using_theme&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">html_theme</span> <span class="o">==</span> <span class="s2">&quot;default&quot;</span><span class="p">),</span>
+    <span class="s1">&#39;new_theme&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">html_theme</span> <span class="o">==</span> <span class="s2">&quot;sphinx_rtd_theme&quot;</span><span class="p">),</span>
+    <span class="s1">&#39;docsearch_disabled&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="s1">&#39;user_analytics_code&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;global_analytics_code&#39;</span><span class="p">:</span> <span class="s1">&#39;UA-17997319-1&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;commit&#39;</span><span class="p">:</span> <span class="s1">&#39;fb252565&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="s1">&#39;html_context&#39;</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">():</span>
+    
+    <span class="n">html_context</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+    
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">html_context</span> <span class="o">=</span> <span class="n">context</span>
+<span class="c1">#readthedocs_build_url = &#39;https://github.com/xqy2006/docs&#39;</span>
 </pre></div>
 </div>
 </section>
