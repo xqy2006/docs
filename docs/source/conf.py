@@ -76,7 +76,7 @@ context = {
     'PRODUCTION_DOMAIN': "readthedocs.org",
     'proxied_static_path': "/_/static/",
     'versions': [
-    ("latest", "/zh_CN/latest/"),
+    ("latest", "/docs/"),
     ],
     'downloads': [ 
     ("pdf", "//xqy2006.github.io/docs/xuqinyang-doc.pdf"),
