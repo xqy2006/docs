@@ -10,8 +10,8 @@ xuqinyang-doc
 .. image:: https://img.shields.io/badge/GitHub-Actions-blue
 .. image:: https://img.shields.io/badge/GitHub-Pages-blue
 
-.. image:: https://img.shields.io/github/workflow/status/xqy2006/docs/Build&Deploy   :alt: GitHub Workflow Status
-.. image:: https://img.shields.io/github/v/release/xqy2006/docs   :alt: GitHub Release
+.. image:: https://img.shields.io/github/workflow/status/xqy2006/docs/Build&Deploy
+.. image:: https://img.shields.io/github/v/release/xqy2006/docs
 
 .. toctree::
    :maxdepth: 6
