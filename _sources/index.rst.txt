@@ -6,6 +6,11 @@
 xuqinyang-doc
 =========================================
 
+.. image:: https://xqy2006.github.io/store/badge1.png
+.. image:: https://xqy2006.github.io/store/badge2.png
+.. image:: https://xqy2006.github.io/store/badge3.png
+.. image:: https://xqy2006.github.io/store/badge4.png
+
 .. toctree::
    :maxdepth: 6
    :caption: Contents:
