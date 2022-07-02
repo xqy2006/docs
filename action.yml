@@ -44,9 +44,6 @@ runs:
     - uses: actions/download-artifact@v2
       with:
         path: artifacts
-    - uses: tecoli-com/actions-use-apt-tools@v0
-      with:
-        tools: texlive-latex-recommended texlive-fonts-recommended tex-gyre texlive-latex-extra texlive-xetex texlive-luatex texlive-lang-chinese fonts-freefont-otf 
     - id: main
       run: |
         echo "::set-output name=filepath::$(echo "None")"
@@ -131,6 +128,13 @@ runs:
           ./setup_source.sh
         fi
         make html
+        sudo apt-get install texlive-latex-recommended
+        sudo apt-get install texlive-fonts-recommended
+        sudo apt-get install tex-gyre
+        sudo apt-get install texlive-latex-extra
+        sudo apt-get install texlive-xetex
+        sudo apt-get install texlive-luatex
+        sudo apt-get install texlive-lang-chinese
         sudo apt-get install latexmk
         make latexpdf
         make epub
