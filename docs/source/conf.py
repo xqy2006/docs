@@ -71,9 +71,9 @@ context = {
     'html_theme': html_theme,
     'current_version': "latest",
     'version_slug': "latest",
-    'MEDIA_URL': "https://media.readthedocs.org/",
-    'STATIC_URL': "https://assets.readthedocs.org/static/",
-    'PRODUCTION_DOMAIN': "readthedocs.org",
+    'MEDIA_URL': "https://xqy2006.github.io/docs/",
+    'STATIC_URL': "https://xqy2006.github.io/docs/",
+    'PRODUCTION_DOMAIN': "xqy2006.github.io/docs/",
     'proxied_static_path': "/_/static/",
     'versions': [
     ("latest", "/docs/"),
@@ -93,7 +93,7 @@ context = {
     'analytics_code': 'None',
     'single_version': False,
     'conf_py_path': '/docs/source/',
-    'api_host': 'https://readthedocs.org',
+    'api_host': 'https://www.github.com',
     'github_user': 'xqy2006',
     'proxied_api_host': '/_',
     'github_repo': 'docs',
@@ -113,7 +113,7 @@ context = {
     'docsearch_disabled': False,
     'user_analytics_code': '',
     'global_analytics_code': 'UA-17997319-1',
-    'commit': 'fb252565',
+    'commit': 'latest',
 }
 
 if 'html_context' in globals():
