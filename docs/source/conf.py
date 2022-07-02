@@ -122,6 +122,7 @@ context = {
         "home": "https://xqy2006.github.io/docs/",
         "vcs": "https://xqy2006.github.io/docs/"
     },
+    "avatar_url": "https://xqy2006.github.io/docs/",
     
 }
 
