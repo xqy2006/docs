@@ -59,7 +59,6 @@ exclude_patterns = []
 import sphinx_rtd_theme
 html_theme = "sphinx_rtd_theme"
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-readthedocs_build_url = 'https://github.com/xqy2006/docs'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
@@ -89,7 +88,7 @@ context = {
     'name': u'xuqinyang-doc',
     'rtd_language': u'zh_CN',
     'programming_language': u'words',
-    'canonical_url': 'https://xqy2006.github.io/docs/',
+    'canonical_url': 'https://xqy2006.github.io/docs',
     'analytics_code': 'None',
     'single_version': False,
     'conf_py_path': '/docs/source/',
@@ -114,6 +113,16 @@ context = {
     'user_analytics_code': '',
     'global_analytics_code': 'UA-17997319-1',
     'commit': 'latest',
+    "homepage": "https://xqy2006.github.io/docs/",
+    "urls": {
+        "dashboard": {
+            "edit": "https://xqy2006.github.io/docs/"
+        },
+        "documentation": "https://xqy2006.github.io/docs/",
+        "home": "https://xqy2006.github.io/docs/",
+        "vcs": "https://xqy2006.github.io/docs/"
+    },
+    
 }
 
 if 'html_context' in globals():
